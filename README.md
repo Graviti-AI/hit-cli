@@ -1,5 +1,10 @@
 # Github Workflow CLI —— hit
 
+[![Downloads](https://pepy.tech/badge/hit-cli/month)](https://pepy.tech/project/hit-cli)
+[![GitHub](https://img.shields.io/github/license/Graviti-AI/hit-cli)](https://github.com/Graviti-AI/hit-cli/blob/main/LICENSE)
+[![PyPI](https://img.shields.io/pypi/v/hit-cli)](https://pypi.org/project/hit-cli/)
+[![PyPI - Python Version](https://img.shields.io/pypi/pyversions/hit-cli)](https://pypi.org/project/hit-cli/)
+
 The github pull request based workflow is quite tedious and complicated,
 `hit` CLI simplify the workflow by wrapping `git` CLI and github API.
 
