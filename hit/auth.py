@@ -29,7 +29,7 @@ def _implement_auth() -> None:
     config_parser["phabricator"]["token"] = phabricator_token
 
     config_file = config_filepath()
-    with open(config_file, "w") as fp:
+    with open(config_file, "w", encoding="utf-8") as fp:
         config_parser.write(fp)
 
     success = click.style("Success!", fg="green")
