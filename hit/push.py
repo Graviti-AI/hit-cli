@@ -41,7 +41,7 @@ def _implement_push(force: bool, yes: bool) -> None:
 
         pulls_count = pulls.totalCount
         if pulls_count == 0:
-            task = _get_task_number(branch, yes)
+            task = _get_task_number(branch, yes) if config.has_section("phabricator") else None
 
             _git_push(branch, force)
             pull_request = _create_pull_request(repo, head)
