@@ -12,7 +12,7 @@ The github pull request based workflow is quite tedious and complicated,
 Install `hit` CLI by pip:
 
 ```bash
-pip3 install hit
+pip3 install hit-cli
 ```
 
 ## Usage
