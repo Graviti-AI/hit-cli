@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 #
-# Copyright (c) 2021 GRAVITI. All rights reserved.
-# Contents cannot be copied or distributed without the permission of GRAVITI.
+# Copyright 2022 Graviti. Licensed under MIT License.
 #
 
 """Implementation of hit clone."""
