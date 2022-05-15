@@ -4,7 +4,7 @@
 # Contents cannot be copied or distributed without the permission of GRAVITI.
 #
 
-"""Implementation of fit push."""
+"""Implementation of hit push."""
 
 import sys
 from subprocess import PIPE, CalledProcessError, run
@@ -29,7 +29,7 @@ def _implement_push(force: bool, yes: bool) -> None:
     try:
         branch = get_current_branch()
         if branch == "main":
-            fatal(f"Do not execute 'fit push' on {branch} branch!")
+            fatal(f"Do not execute 'hit push' on {branch} branch!")
 
         config = read_config()
         github = Github(config["github"]["token"])

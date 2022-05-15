@@ -4,7 +4,7 @@
 # Contents cannot be copied or distributed without the permission of GRAVITI.
 #
 
-"""Implementation of fit clone."""
+"""Implementation of hit clone."""
 
 import os
 import sys

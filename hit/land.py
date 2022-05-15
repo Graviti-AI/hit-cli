@@ -4,7 +4,7 @@
 # Contents cannot be copied or distributed without the permission of GRAVITI.
 #
 
-"""Implementation of fit land."""
+"""Implementation of hit land."""
 
 import os
 import sys
@@ -30,7 +30,7 @@ def _implement_land(yes: bool) -> None:
     try:
         branch = get_current_branch()
         if branch == "main":
-            fatal(f"Do not execute 'fit land' on {branch} branch!")
+            fatal(f"Do not execute 'hit land' on {branch} branch!")
 
         token = read_config()["github"]["token"]
         github = Github(token)
@@ -66,7 +66,7 @@ def _implement_land(yes: bool) -> None:
             except GithubException as error:
                 if error.status in (405, 409):
                     if error.status == 409:
-                        warning(f"{error.data['message']} Run 'fit land' again may fix it.")
+                        warning(f"{error.data['message']} Run 'hit land' again may fix it.")
                     else:
                         fatal(error.data["message"], kill=False)  # type: ignore[arg-type]
 
@@ -156,8 +156,8 @@ def _append_pull_request_url(base: str, url: str) -> None:
         return
 
     env = os.environ.copy()
-    env["GIT_EDITOR"] = f"fit message append '{trailer}'"
-    env["GIT_SEQUENCE_EDITOR"] = "fit message reword"
+    env["GIT_EDITOR"] = f"hit message append '{trailer}'"
+    env["GIT_SEQUENCE_EDITOR"] = "hit message reword"
 
     click.secho("> Rewording:", bold=True)
     click.echo("Appending pull request URL to commit message.")

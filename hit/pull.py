@@ -4,7 +4,7 @@
 # Contents cannot be copied or distributed without the permission of GRAVITI.
 #
 
-"""Implementation of fit pull."""
+"""Implementation of hit pull."""
 
 import sys
 from subprocess import CalledProcessError, run

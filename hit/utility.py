@@ -4,7 +4,7 @@
 # Contents cannot be copied or distributed without the permission of GRAVITI.
 #
 
-"""Graviti fit CLI utility functions."""
+"""Graviti hit CLI utility functions."""
 
 import os
 import sys
@@ -25,7 +25,7 @@ def config_filepath() -> str:
 
     """
     home = "USERPROFILE" if os.name == "nt" else "HOME"
-    return os.path.join(os.environ[home], ".fitconfig")
+    return os.path.join(os.environ[home], ".hitconfig")
 
 
 def read_config() -> ConfigParser:

@@ -16,23 +16,23 @@ from . import __version__
 
 @click.group()
 @click.version_option(__version__)
-def fit() -> None:
-    """Usage: 'fit' + COMMAND.\f"""  # noqa: D415, D301
+def hit() -> None:
+    """Usage: 'hit' + COMMAND.\f"""  # noqa: D415, D301
 
 
-@fit.command()
+@hit.command()
 def auth() -> None:
-    """Get Github Auth for fit CLI.\f"""  # noqa: D415, D301
+    """Get Github Auth for hit CLI.\f"""  # noqa: D415, D301
     from .auth import _implement_auth
 
     _implement_auth()
 
 
-@fit.command()
+@hit.command()
 @click.argument("repository", type=str)
 @click.argument("directory", type=str, required=False)
 def clone(repository: str, directory: Optional[str]) -> None:
-    """Fork then clone the target github repo for fit CLI.\f
+    """Fork then clone the target github repo for hit CLI.\f
 
     Arguments:
         repository: The repository name needs to be forked and cloned
@@ -44,7 +44,7 @@ def clone(repository: str, directory: Optional[str]) -> None:
     _implement_clone(repository, directory)
 
 
-@fit.command()
+@hit.command()
 def pull() -> None:
     """Sync the local and remote develop repo with upstream repo.\f"""  # noqa: D415, D301
     from .pull import _implement_pull
@@ -52,7 +52,7 @@ def pull() -> None:
     _implement_pull()
 
 
-@fit.command()
+@hit.command()
 @click.option("-f", "--force", is_flag=True, help="Whether to git push with -f.")
 @click.option("-y", "--yes", is_flag=True, help="Run non-interactively with 'yes' to all prompts.")
 def push(force: bool, yes: bool) -> None:
@@ -68,7 +68,7 @@ def push(force: bool, yes: bool) -> None:
     _implement_push(force, yes)
 
 
-@fit.command()
+@hit.command()
 @click.option("-y", "--yes", is_flag=True, help="Run non-interactively with 'yes' to all prompts.")
 def land(yes: bool) -> None:
     """Merge the pull request then clean and sync repo.\f
@@ -82,7 +82,7 @@ def land(yes: bool) -> None:
     _implement_land(yes)
 
 
-@fit.command()
+@hit.command()
 @click.argument("branch", type=str, required=False)
 @click.option("-y", "--yes", is_flag=True, help="Run non-interactively with 'yes' to all prompts.")
 def clean(branch: Optional[str], yes: bool) -> None:
@@ -98,7 +98,7 @@ def clean(branch: Optional[str], yes: bool) -> None:
     _implement_clean(branch, yes)
 
 
-@fit.group(hidden=True)
+@hit.group(hidden=True)
 def message() -> None:
     """Git message modifier.\f"""  # noqa: D415, D301
 
@@ -134,4 +134,4 @@ def append(url: str, file: str) -> None:
 
 
 if __name__ == "__main__":
-    fit()
+    hit()

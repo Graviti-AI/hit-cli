@@ -4,7 +4,7 @@
 # Contents cannot be copied or distributed without the permission of GRAVITI.
 #
 
-"""Implementation of fit push."""
+"""Implementation of hit push."""
 
 
 from .utility import clean_commit_message

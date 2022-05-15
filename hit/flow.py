@@ -36,7 +36,7 @@ def release(tag: str) -> None:
     """  # noqa: D415, D301
     release_branch = get_current_branch()
     if release_branch == "main":
-        fatal(f"Do not fit release in {release_branch} branch!")
+        fatal(f"Do not hit release in {release_branch} branch!")
 
     run(["git", "checkout", "main"], check=True)
 
@@ -89,7 +89,7 @@ def branch(branch_name: str, delete: bool, init: bool) -> None:
     else:
         source_branch = get_current_branch()
         if source_branch == "main":
-            fatal(f"Do not fit branch in {source_branch} branch!")
+            fatal(f"Do not hit branch in {source_branch} branch!")
 
     revert_commit, start_commit = _get_fork_commit("main", source_branch)
     run(["git", "checkout", "-b", branch_name, revert_commit], check=True)

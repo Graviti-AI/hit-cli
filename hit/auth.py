@@ -4,7 +4,7 @@
 # Contents cannot be copied or distributed without the permission of GRAVITI.
 #
 
-"""Implementation of fit auth."""
+"""Implementation of hit auth."""
 
 from configparser import ConfigParser
 from typing import Tuple

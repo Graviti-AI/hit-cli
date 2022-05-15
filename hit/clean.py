@@ -4,7 +4,7 @@
 # Contents cannot be copied or distributed without the permission of GRAVITI.
 #
 
-"""Implementation of fit clean."""
+"""Implementation of hit clean."""
 
 import sys
 from subprocess import CalledProcessError
@@ -18,7 +18,7 @@ def _implement_clean(branch: Optional[str], yes: bool) -> None:
         current_branch = get_current_branch()
         target_branch = branch if branch else current_branch
         if target_branch == "main":
-            fatal(f"Do not execute 'fit clean' on {target_branch} branch!")
+            fatal(f"Do not execute 'hit clean' on {target_branch} branch!")
 
         clean_branch(target_branch, yes, target_branch == current_branch)
 
