@@ -9,7 +9,7 @@ import os
 import sys
 from configparser import ConfigParser
 from subprocess import PIPE, run
-from typing import Iterable, List, Optional
+from typing import Iterable, List, NoReturn, Optional
 
 import click
 
@@ -36,7 +36,7 @@ def read_config() -> ConfigParser:
     """
     config_file = config_filepath()
     if not os.path.exists(config_file):
-        fatal("Config file does not exist!")
+        fatal_and_kill("Config file does not exist!")
 
     config_parser = ConfigParser()
     config_parser.read(config_file)
@@ -82,7 +82,7 @@ def get_upstream_repo_name() -> str:
     result = run(["git", "remote", "get-url", "upstream"], stdout=PIPE, check=True)
     ssh_url = result.stdout.decode().strip()
     if not ssh_url.startswith("git@github.com:") or not ssh_url.endswith(".git"):
-        fatal("Upstream url '{ssh_url}' is not a github SSH key!")
+        fatal_and_kill("Upstream url '{ssh_url}' is not a github SSH key!")
 
     return ssh_url[15:-4]
 
@@ -158,17 +158,25 @@ def sync_everything() -> None:
     run(["git", "push"], check=True)
 
 
-def fatal(message: str, kill: bool = True) -> None:
+def fatal(message: str) -> None:
+    """Print the message in FATAL style.
+
+    Arguments:
+        message: The fatal message.
+
+    """
+    click.secho(f"FATAL: {message}", err=True, fg="red")
+
+
+def fatal_and_kill(message: str) -> NoReturn:
     """Print the message in FATAL style then exit the program with code 1.
 
     Arguments:
         message: The fatal message.
-        kill: whether to exit the program.
 
     """
     click.secho(f"FATAL: {message}", err=True, fg="red")
-    if kill:
-        sys.exit(1)
+    sys.exit(1)
 
 
 def warning(message: str) -> None:

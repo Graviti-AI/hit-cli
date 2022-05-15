@@ -16,6 +16,7 @@ from .conduit import Conduit
 from .utility import (
     clean_commit_message,
     fatal,
+    fatal_and_kill,
     get_current_branch,
     get_remote_branch,
     get_upstream_repo_name,
@@ -28,7 +29,7 @@ def _implement_push(force: bool, yes: bool) -> None:
     try:
         branch = get_current_branch()
         if branch == "main":
-            fatal(f"Do not execute 'hit push' on {branch} branch!")
+            fatal_and_kill(f"Do not execute 'hit push' on {branch} branch!")
 
         config = read_config()
         github = Github(config["github"]["token"])
@@ -59,7 +60,7 @@ def _implement_push(force: bool, yes: bool) -> None:
 
             click.secho("\n> Pull Requset Updated:", fg="green")
         else:
-            fatal("This branch is linked to more than one pull requests!")
+            fatal_and_kill("This branch is linked to more than one pull requests!")
 
         click.secho(pull_request.html_url, underline=True)
 
@@ -117,7 +118,7 @@ def _create_pull_request(repo: Repository.Repository, head: str) -> PullRequest.
     except GithubException as error:
         if error.status == 422:
             for data in error.data["errors"]:
-                fatal(data["message"], kill=False)  # type: ignore[index]
+                fatal(data["message"])  # type: ignore[index]
 
             sys.exit(1)
 

@@ -17,6 +17,7 @@ from .utility import (
     PR_CLOSED,
     clean_branch,
     fatal,
+    fatal_and_kill,
     get_current_branch,
     get_upstream_repo_name,
     read_config,
@@ -29,7 +30,7 @@ def _implement_land(yes: bool) -> None:
     try:
         branch = get_current_branch()
         if branch == "main":
-            fatal(f"Do not execute 'hit land' on {branch} branch!")
+            fatal_and_kill(f"Do not execute 'hit land' on {branch} branch!")
 
         token = read_config()["github"]["token"]
         github = Github(token)
@@ -40,7 +41,7 @@ def _implement_land(yes: bool) -> None:
         pulls = repo.get_pulls(head=head)
         pulls_count = pulls.totalCount
         if pulls_count == 0:
-            fatal("No pull request found for this branch!")
+            fatal_and_kill("No pull request found for this branch!")
         elif pulls_count == 1:
             pull_request = pulls[0]
             url = pull_request.html_url
@@ -67,14 +68,14 @@ def _implement_land(yes: bool) -> None:
                     if error.status == 409:
                         warning(f"{error.data['message']} Run 'hit land' again may fix it.")
                     else:
-                        fatal(error.data["message"], kill=False)  # type: ignore[arg-type]
+                        fatal(error.data["message"])  # type: ignore[arg-type]
 
                     click.secho(url, underline=True)
                     sys.exit(1)
 
                 raise
         else:
-            fatal("This branch is linked to more than one pull requests!")
+            fatal_and_kill("This branch is linked to more than one pull requests!")
 
         click.secho("> Pull Requset Merged:", fg="green")
         click.secho(url, underline=True)
@@ -96,7 +97,7 @@ def _get_head_sha() -> str:
 def _check_pull_request_sha(commit: Commit.Commit) -> None:
     local_commit_sha = _get_head_sha()
     if local_commit_sha != commit.sha:
-        fatal("Unpushed changes detected, please push it before landing!")
+        fatal_and_kill("Unpushed changes detected, please push it before landing!")
 
 
 def _check_pull_request_checks(commit: Commit.Commit, yes: bool) -> None:
@@ -111,7 +112,7 @@ def _check_pull_request_checks(commit: Commit.Commit, yes: bool) -> None:
             break
 
     if not success_flag:
-        fatal("Not all Checks have passed!", False)
+        fatal("Not all Checks have passed!")
     elif not completed_flag:
         warning("Not all Checks have finished!")
     else:

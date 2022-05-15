@@ -13,7 +13,7 @@ from github import Github
 from github.GithubException import BadCredentialsException
 
 from .conduit import Conduit, ConduitError
-from .utility import config_filepath, fatal
+from .utility import config_filepath, fatal_and_kill
 
 
 def _implement_auth() -> None:
@@ -50,7 +50,7 @@ def _auth_for_github() -> str:
         name = user.login
         company = user.company
     except BadCredentialsException:
-        fatal("Invalid Github Token!")
+        fatal_and_kill("Invalid Github Token!")
 
     welcome_message = click.style(name if not company else f"{name} from {company}", bold=True)
 
@@ -79,7 +79,7 @@ def _auth_for_phabriactor() -> Tuple[str, str]:
         if error.code != "ERR-INVALID-AUTH":
             raise
 
-        fatal("Invalid Phabricator Token!")
+        fatal_and_kill("Invalid Phabricator Token!")
 
     click.echo(f"\n> Phabricator auth as {phabricator_user}.")
 

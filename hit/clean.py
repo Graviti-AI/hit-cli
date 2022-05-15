@@ -9,7 +9,7 @@ import sys
 from subprocess import CalledProcessError
 from typing import Optional
 
-from .utility import clean_branch, fatal, get_current_branch
+from .utility import clean_branch, fatal_and_kill, get_current_branch
 
 
 def _implement_clean(branch: Optional[str], yes: bool) -> None:
@@ -17,7 +17,7 @@ def _implement_clean(branch: Optional[str], yes: bool) -> None:
         current_branch = get_current_branch()
         target_branch = branch if branch else current_branch
         if target_branch == "main":
-            fatal(f"Do not execute 'hit clean' on {target_branch} branch!")
+            fatal_and_kill(f"Do not execute 'hit clean' on {target_branch} branch!")
 
         clean_branch(target_branch, yes, target_branch == current_branch)
 

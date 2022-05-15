@@ -14,7 +14,7 @@ import click
 from github import Github
 from github.GithubException import UnknownObjectException
 
-from .utility import fatal, read_config
+from .utility import fatal_and_kill, read_config
 
 
 def _implement_clone(repository: str, directory: Optional[str]) -> None:
@@ -23,7 +23,7 @@ def _implement_clone(repository: str, directory: Optional[str]) -> None:
     try:
         origin_repo = github.get_repo(repository)
     except UnknownObjectException:
-        fatal(f"Repository '{repository}' not found!")
+        fatal_and_kill(f"Repository '{repository}' not found!")
 
     forked_repo = origin_repo.create_fork()
 
