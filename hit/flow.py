@@ -10,7 +10,7 @@ from typing import List, Tuple
 
 import click
 
-from .utility import fatal_and_kill, get_current_branch, warning
+from hit.utility import fatal_and_kill, get_current_branch, warning
 
 REVERT_MESSAGE = """REVERT: revert {} commits for new release
 
@@ -113,8 +113,9 @@ def _get_merge_base(base: str, head: str) -> str:
 def _get_patch_id(commit: str) -> str:
     result = run(["git", "show", commit], check=True, stdout=PIPE)
 
-    process = Popen(["git", "patch-id"], stdin=PIPE, stdout=PIPE)
-    stdout = process.communicate(result.stdout)[0]
+    with Popen(["git", "patch-id"], stdin=PIPE, stdout=PIPE) as process:
+        stdout = process.communicate(result.stdout)[0]
+
     return stdout.decode().split()[0]
 
 

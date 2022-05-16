@@ -9,7 +9,7 @@ import sys
 from subprocess import CalledProcessError
 from typing import Optional
 
-from .utility import clean_branch, fatal_and_kill, get_current_branch
+from hit.utility import clean_branch, fatal_and_kill, get_current_branch
 
 
 def _implement_clean(branch: Optional[str], yes: bool) -> None:

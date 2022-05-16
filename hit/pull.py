@@ -8,7 +8,7 @@
 import sys
 from subprocess import CalledProcessError, run
 
-from .utility import get_current_branch, sync_everything
+from hit.utility import get_current_branch, sync_everything
 
 
 def _implement_pull() -> None:

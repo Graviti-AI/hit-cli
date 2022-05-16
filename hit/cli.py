@@ -10,7 +10,7 @@ from typing import Optional
 
 import click
 
-from . import __version__
+from hit import __version__
 
 
 @click.group()
@@ -28,7 +28,7 @@ def auth(phabricator: bool) -> None:
         phabricator: Whether auth with Phabricator.
 
     """  # noqa: D415, D301
-    from .auth import _implement_auth
+    from hit.auth import _implement_auth
 
     _implement_auth(phabricator)
 
@@ -44,7 +44,7 @@ def clone(repository: str, directory: Optional[str]) -> None:
         directory: The newly created directory the repo needs to be cloned to
 
     """  # noqa: D415, D301
-    from .clone import _implement_clone
+    from hit.clone import _implement_clone
 
     _implement_clone(repository, directory)
 
@@ -52,7 +52,7 @@ def clone(repository: str, directory: Optional[str]) -> None:
 @hit.command()
 def pull() -> None:
     """Sync the local and remote develop repo with upstream repo.\f"""  # noqa: D415, D301
-    from .pull import _implement_pull
+    from hit.pull import _implement_pull
 
     _implement_pull()
 
@@ -68,7 +68,7 @@ def push(force: bool, yes: bool) -> None:
         yes: Run non-interactively with 'yes' to all prompts.
 
     """  # noqa: D415, D301
-    from .push import _implement_push
+    from hit.push import _implement_push
 
     _implement_push(force, yes)
 
@@ -82,7 +82,7 @@ def land(yes: bool) -> None:
         yes: Run non-interactively with 'yes' to all prompts.
 
     """  # noqa: D415, D301
-    from .land import _implement_land
+    from hit.land import _implement_land
 
     _implement_land(yes)
 
@@ -98,7 +98,7 @@ def clean(branch: Optional[str], yes: bool) -> None:
         yes: Run non-interactively with 'yes' to all prompts.
 
     """  # noqa: D415, D301
-    from .clean import _implement_clean
+    from hit.clean import _implement_clean
 
     _implement_clean(branch, yes)
 
@@ -117,7 +117,7 @@ def reword(file: str) -> None:
         file: The git rebase interactive file name.
 
     """  # noqa: D415, D301
-    from .message import _implement_reword
+    from hit.message import _implement_reword
 
     _implement_reword(file)
 
@@ -133,7 +133,7 @@ def append(url: str, file: str) -> None:
         file: The git commit message file name.
 
     """  # noqa: D415, D301
-    from .message import _implement_append
+    from hit.message import _implement_append
 
     _implement_append(url, file)
 

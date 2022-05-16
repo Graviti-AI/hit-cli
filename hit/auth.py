@@ -12,8 +12,8 @@ import click
 from github import Github
 from github.GithubException import BadCredentialsException
 
-from .conduit import Conduit, ConduitError
-from .utility import config_filepath, fatal_and_kill
+from hit.conduit import Conduit, ConduitError
+from hit.utility import config_filepath, fatal_and_kill
 
 
 def _implement_auth(phabricator: bool) -> None:

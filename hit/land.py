@@ -13,7 +13,7 @@ from time import sleep
 import click
 from github import Commit, Github, GithubException
 
-from .utility import (
+from hit.utility import (
     PR_CLOSED,
     clean_branch,
     fatal,

@@ -12,8 +12,8 @@ from typing import Tuple
 import click
 from github import Github, GithubException, PullRequest, Repository
 
-from .conduit import Conduit
-from .utility import (
+from hit.conduit import Conduit
+from hit.utility import (
     clean_commit_message,
     fatal,
     fatal_and_kill,

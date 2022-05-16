@@ -6,7 +6,7 @@
 """Implementation of hit push."""
 
 
-from .utility import clean_commit_message
+from hit.utility import clean_commit_message
 
 
 def _implement_reword(file: str) -> None:

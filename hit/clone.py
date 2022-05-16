@@ -14,7 +14,7 @@ import click
 from github import Github
 from github.GithubException import UnknownObjectException
 
-from .utility import fatal_and_kill, read_config
+from hit.utility import fatal_and_kill, read_config
 
 
 def _implement_clone(repository: str, directory: Optional[str]) -> None:
