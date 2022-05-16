@@ -9,7 +9,7 @@ import os
 import sys
 from configparser import ConfigParser
 from subprocess import PIPE, run
-from typing import Iterable, List, NoReturn, Optional
+from typing import Iterable, List, NoReturn, Optional, Tuple
 
 import click
 
@@ -72,19 +72,23 @@ def get_remote_branch(branch: str = "") -> Optional[str]:
     return result.stdout.decode().strip()
 
 
-def get_upstream_repo_name() -> str:
-    """Get the name of upstream repo.
-
-    Returns:
-        The name of upstream repo.
-
-    """
-    result = run(["git", "remote", "get-url", "upstream"], stdout=PIPE, check=True)
+def _get_repo_name(remote_name: str) -> str:
+    result = run(["git", "remote", "get-url", remote_name], stdout=PIPE, check=True)
     ssh_url = result.stdout.decode().strip()
     if not ssh_url.startswith("git@github.com:") or not ssh_url.endswith(".git"):
         fatal_and_kill("Upstream url '{ssh_url}' is not a github SSH key!")
 
     return ssh_url[15:-4]
+
+
+def get_repo_names() -> Tuple[str, str]:
+    """Get the name of origin and upstream repo.
+
+    Returns:
+        The name of origin and upstream repo.
+
+    """
+    return _get_repo_name("origin"), _get_repo_name("upstream")
 
 
 def clean_branch(branch: str, yes: bool, main: bool) -> None:

@@ -19,7 +19,7 @@ from hit.utility import (
     fatal,
     fatal_and_kill,
     get_current_branch,
-    get_upstream_repo_name,
+    get_repo_names,
     read_config,
     sync_everything,
     warning,
@@ -35,10 +35,12 @@ def _implement_land(yes: bool) -> None:
         token = read_config()["github"]["token"]
         github = Github(token)
 
-        repo = github.get_repo(get_upstream_repo_name())
+        origin_name, upstream_name = get_repo_names()
 
-        head = f"{github.get_user().login}:{branch}"
-        pulls = repo.get_pulls(head=head)
+        repo = github.get_repo(upstream_name)
+
+        pulls = repo.get_pulls(head=f"{origin_name}:{branch}")
+
         pulls_count = pulls.totalCount
         if pulls_count == 0:
             fatal_and_kill("No pull request found for this branch!")

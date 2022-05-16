@@ -19,7 +19,7 @@ from hit.utility import (
     fatal_and_kill,
     get_current_branch,
     get_remote_branch,
-    get_upstream_repo_name,
+    get_repo_names,
     read_config,
     warning,
 )
@@ -34,9 +34,11 @@ def _implement_push(force: bool, yes: bool) -> None:
         config = read_config()
         github = Github(config["github"]["token"])
 
-        repo = github.get_repo(get_upstream_repo_name())
+        origin_name, upstream_name = get_repo_names()
 
-        head = f"{github.get_user().login}:{branch}"
+        repo = github.get_repo(upstream_name)
+
+        head = f"{origin_name}:{branch}"
         pulls = repo.get_pulls(head=head)
 
         pulls_count = pulls.totalCount
@@ -44,7 +46,7 @@ def _implement_push(force: bool, yes: bool) -> None:
             task = _get_task_number(branch, yes) if config.has_section("phabricator") else None
 
             _git_push(branch, force)
-            pull_request = _create_pull_request(repo, head)
+            pull_request = _create_pull_request(repo, f"{origin_name.split('/', 1)[0]}:{branch}")
 
             if task:
                 conduit = Conduit(config["phabricator"]["url"], config["phabricator"]["token"])
