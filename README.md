@@ -1,5 +1,6 @@
 # Github Workflow CLI —— hit
 
+[![Pre-commit](https://github.com/Graviti-AI/hit-cli/actions/workflows/pre-commit.yaml/badge.svg)](https://github.com/Graviti-AI/hit-cli/actions/workflows/pre-commit.yaml)
 [![Downloads](https://pepy.tech/badge/hit-cli/month)](https://pepy.tech/project/hit-cli)
 [![GitHub](https://img.shields.io/github/license/Graviti-AI/hit-cli)](https://github.com/Graviti-AI/hit-cli/blob/main/LICENSE)
 [![PyPI](https://img.shields.io/pypi/v/hit-cli)](https://pypi.org/project/hit-cli/)
