@@ -13,7 +13,7 @@ import click
 from hit import __version__
 
 
-@click.group()
+@click.group(context_settings={"help_option_names": ("-h", "--help")})
 @click.version_option(__version__)
 def hit() -> None:
     """Usage: 'hit' + COMMAND.\f"""  # noqa: D415, D301
