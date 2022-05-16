@@ -20,10 +20,11 @@ from hit.utility import fatal_and_kill, read_config
 def _implement_clone(repository: str, directory: Optional[str]) -> None:
     token = read_config()["github"]["token"]
     github = Github(token)
+    name = _get_repo_name(repository)
     try:
-        origin_repo = github.get_repo(repository)
+        origin_repo = github.get_repo(name)
     except UnknownObjectException:
-        fatal_and_kill(f"Repository '{repository}' not found!")
+        fatal_and_kill(f"Repository '{name}' not found!")
 
     forked_repo = origin_repo.create_fork()
 
@@ -37,3 +38,13 @@ def _implement_clone(repository: str, directory: Optional[str]) -> None:
         run(["git", "config", "--local", "remote.upstream.gh-resolved", "base"], check=True)
     except CalledProcessError:
         sys.exit(1)
+
+
+def _get_repo_name(repository: str) -> str:
+    if repository.startswith("https://github.com/"):
+        return "/".join(repository[19:].split("/", 2)[:2])
+
+    if repository.startswith("git@github.com") and repository.endswith(".git"):
+        return repository[15:-4]
+
+    return repository
