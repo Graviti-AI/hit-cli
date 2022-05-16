@@ -97,19 +97,6 @@ repos:
             "{extends: default, rules: {line-length: {max: 100}, truthy: {check-keys: false}}}",
           ]
 
-  - repo: https://github.com/myint/rstcheck
-    rev: 3f92957478422df87bd730abde66f089cc1ee19b
-    hooks:
-      - id: rstcheck
-        types: [rst]
-        additional_dependencies: ["sphinx"]
-        args:
-          [
-            "--ignore-directives=automodule",
-            "--ignore-messages",
-            'Hyperlink target ".+?" is not referenced.',
-          ]
-
   - repo: https://github.com/igorshubovych/markdownlint-cli
     rev: v0.28.1
     hooks:
