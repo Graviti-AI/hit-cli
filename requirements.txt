@@ -1,0 +1,6 @@
+#
+# Copyright 2022 Graviti. Licensed under MIT License.
+#
+
+click >= 7.0.0
+PyGithub >= 1.54.0
