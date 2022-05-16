@@ -46,7 +46,7 @@ repos:
       - id: flake8
         types: [python]
         exclude: "(test_\\w*\\.py$)"
-        additional_dependencies: ["flake8-docstrings", "darglint"]
+        additional_dependencies: [flake8-docstrings==1.6.0, darglint==1.8.1]
         args:
           [
             "--max-line-length=100",
@@ -63,7 +63,7 @@ repos:
       - id: mypy
         types: [python]
         exclude: "(test_\\w*\\.py$)"
-        additional_dependencies: [types-requests, click, PyGithub]
+        additional_dependencies: [types-requests==2.25.11, click==8.0.1, PyGithub==1.55]
         args:
           [
             "--cache-dir=/tmp/mypy_cache/",
