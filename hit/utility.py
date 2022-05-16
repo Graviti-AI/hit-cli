@@ -36,7 +36,9 @@ def read_config() -> ConfigParser:
     """
     config_file = config_filepath()
     if not os.path.exists(config_file):
-        fatal_and_kill("Config file does not exist!")
+        fatal_and_kill(
+            "Config file not found. Please run 'hit auth' to initialize the CLI tool first"
+        )
 
     config_parser = ConfigParser()
     config_parser.read(config_file)
