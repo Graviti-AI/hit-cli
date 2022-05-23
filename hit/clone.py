@@ -71,10 +71,10 @@ def _install_precommit_scripts() -> None:
             "Skip the 'pre-commit' scripts installation phrase.\n"
             "\n"
             "To install 'pre-commit', run:\n"
-            "  pip install pre-commit\n"
+            "  $ pip install pre-commit\n"
             "\n"
             "To install the 'pre-commit' scripts for the repo, run:\n"
-            "  pre-commit install [-t {hook types}]\n"
+            "  $ pre-commit install [-t {hook types}]\n"
             "\n"
             "Check 'https://pre-commit.com/index.html' for more info."
         )
