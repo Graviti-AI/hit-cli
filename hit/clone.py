@@ -74,10 +74,13 @@ def _install_precommit_scripts() -> None:
         from pre_commit.commands.install_uninstall import install
         from pre_commit.store import Store
     except ModuleNotFoundError:
-        click.echo(
+        click.secho(
             f"'{_PRECOMMIT_CONFIG_PATH}' is found in the repo, but 'pre-commit' is not installed.\n"
-            "Skip the 'pre-commit' scripts installation phrase.\n"
-            "\n"
+            "Skip the 'pre-commit' scripts installation phrase.\n",
+            fg="yellow",
+        )
+
+        click.echo(
             "To install 'pre-commit', run:\n"
             "  $ pip install pre-commit\n"
             "\n"
