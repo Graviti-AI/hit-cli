@@ -30,13 +30,13 @@ Usage: hit [OPTIONS] COMMAND [ARGS]...
   Usage: 'hit' + COMMAND.
 
 Options:
-  --version  Show the version and exit.
-  --help     Show this message and exit.
+  --version   Show the version and exit.
+  -h, --help  Show this message and exit.
 
 Commands:
   auth   Get Github Auth for hit CLI.
   clean  Detele useless local and remote develop branch.
-  clone  Fork then clone the target github repo for hit CLI.
+  clone  Fork + clone + initialize the target github repo for hit CLI.
   land   Merge the pull request then clean and sync repo.
   pull   Sync the local and remote develop repo with upstream repo.
   push   Push the local branch to remote and create/update the pull request.
