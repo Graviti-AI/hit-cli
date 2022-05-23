@@ -18,6 +18,8 @@ from hit.utility import config_filepath, fatal_and_kill
 
 def _implement_auth(phabricator: bool) -> None:
     config_parser = ConfigParser()
+    config_file = config_filepath()
+    config_parser.read(config_file)
 
     if phabricator:
         phabricator_url, phabricator_token = _auth_for_phabriactor()
@@ -31,7 +33,6 @@ def _implement_auth(phabricator: bool) -> None:
         config_parser.add_section("github")
         config_parser["github"]["token"] = github_token
 
-    config_file = config_filepath()
     with open(config_file, "w", encoding="utf-8") as fp:
         config_parser.write(fp)
 
