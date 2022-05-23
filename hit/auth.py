@@ -66,7 +66,7 @@ def _auth_for_phabriactor() -> Tuple[str, str]:
     click.echo("=" * 80)
     click.secho("Phabricator Auth:", fg="green")
 
-    url = click.prompt("\nInput the Phabricator URL", default="https://phabricator.graviti.cn/")
+    url = click.prompt("\nInput the Phabricator URL")
     if not url.endswith("/"):
         url += "/"
 
