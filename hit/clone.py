@@ -54,6 +54,8 @@ def _implement_clone(repository: str, directory: Optional[str]) -> None:
         click.secho("> Installing 'pre-commit' scripts:", bold=True)
         _install_precommit_scripts()
 
+    click.secho("\n> Success!", fg="green")
+
 
 def _get_repo_name(repository: str) -> str:
     if repository.startswith("https://github.com/"):
