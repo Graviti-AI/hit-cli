@@ -82,7 +82,8 @@ def _install_precommit_scripts() -> None:
             "To install the 'pre-commit' scripts for the repo, run:\n"
             "  $ pre-commit install [-t {hook types}]\n"
             "\n"
-            "Check 'https://pre-commit.com/index.html' for more info."
+            f"Check {click.style('https://pre-commit.com/index.html', underline=True)} "
+            "for more info."
         )
         return
 
