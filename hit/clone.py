@@ -28,20 +28,31 @@ def _implement_clone(repository: str, directory: Optional[str]) -> None:
     except UnknownObjectException:
         fatal_and_kill(f"Repository '{name}' not found!")
 
+    click.secho("> Forking:", bold=True)
+
     forked_repo = origin_repo.create_fork()
 
-    click.echo(f"> Forked repository: {click.style(forked_repo.full_name, bold=True)}\n")
+    click.echo(f"Repository forked: {click.style(forked_repo.full_name, bold=True)}\n")
 
     directory = directory if directory else name.split("/", 1)[1]
     try:
+        click.secho("> Cloning:", bold=True)
         run(["git", "clone", forked_repo.ssh_url, directory], check=True)
+
         os.chdir(directory)
+
+        click.secho("\n> Setting upstream:", bold=True)
         run(["git", "remote", "add", "upstream", origin_repo.ssh_url], check=True)
         run(["git", "config", "--local", "remote.upstream.gh-resolved", "base"], check=True)
+
+        click.echo(f"Remote added: {click.style(origin_repo.ssh_url, underline=True)}\n")
+
     except CalledProcessError:
         sys.exit(1)
 
-    _install_precommit_scripts()
+    if os.path.exists(_PRECOMMIT_CONFIG_PATH):
+        click.secho("> Installing 'pre-commit' scripts:", bold=True)
+        _install_precommit_scripts()
 
 
 def _get_repo_name(repository: str) -> str:
@@ -55,11 +66,6 @@ def _get_repo_name(repository: str) -> str:
 
 
 def _install_precommit_scripts() -> None:
-    if not os.path.exists(_PRECOMMIT_CONFIG_PATH):
-        return
-
-    click.echo("\n> Installing 'pre-commit' scripts:\n")
-
     try:
         # pylint: disable=import-outside-toplevel
         from pre_commit.clientlib import load_config
