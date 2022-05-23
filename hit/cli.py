@@ -59,18 +59,16 @@ def pull() -> None:
 
 @hit.command()
 @click.option("-f", "--force", is_flag=True, help="Whether to git push with -f.")
-@click.option("-y", "--yes", is_flag=True, help="Run non-interactively with 'yes' to all prompts.")
-def push(force: bool, yes: bool) -> None:
+def push(force: bool) -> None:
     """Push the local branch to remote and create/update the pull request.\f
 
     Arguments:
         force: Whether to git push with -f.
-        yes: Run non-interactively with 'yes' to all prompts.
 
     """  # noqa: D415, D301
     from hit.push import _implement_push
 
-    _implement_push(force, yes)
+    _implement_push(force)
 
 
 @hit.command()

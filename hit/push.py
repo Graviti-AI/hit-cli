@@ -7,7 +7,7 @@
 
 import sys
 from subprocess import PIPE, CalledProcessError, run
-from typing import Tuple
+from typing import Optional, Tuple
 
 import click
 from github import Github, GithubException, PullRequest, Repository
@@ -25,7 +25,7 @@ from hit.utility import (
 )
 
 
-def _implement_push(force: bool, yes: bool) -> None:
+def _implement_push(force: bool) -> None:
     try:
         branch = get_current_branch()
         if branch == "main":
@@ -43,7 +43,7 @@ def _implement_push(force: bool, yes: bool) -> None:
 
         pulls_count = pulls.totalCount
         if pulls_count == 0:
-            task = _get_task_number(branch, yes) if config.has_section("phabricator") else None
+            task = _get_task_number(branch) if config.has_section("phabricator") else None
 
             _git_push(branch, force)
             pull_request = _create_pull_request(repo, f"{origin_name.split('/', 1)[0]}:{branch}")
@@ -74,22 +74,17 @@ def _implement_push(force: bool, yes: bool) -> None:
         sys.exit(1)
 
 
-def _get_task_number(branch: str, yes: bool) -> int:
+def _get_task_number(branch: str) -> Optional[int]:
+    if not branch.startswith("T"):
+        return None
+
+    index = branch.find("_")
+    task = branch[1:index] if index != -1 else branch[1:]
+
     try:
-        if not branch.startswith("T"):
-            raise ValueError("The branch name does not start with 'T'")
-
-        index = branch.find("_")
-        task = branch[1:index] if index != -1 else branch[1:]
-
         return int(task)
-
     except ValueError:
-        warning("Current branch name does not start with a phabricator task")
-        if not yes:
-            click.confirm("Do you want to continue?", abort=True)
-        click.echo()
-        return 0
+        return None
 
 
 def _git_push(branch: str, force: bool) -> None:
