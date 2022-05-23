@@ -37,7 +37,7 @@ def auth(phabricator: bool) -> None:
 @click.argument("repository", type=str)
 @click.argument("directory", type=str, required=False)
 def clone(repository: str, directory: Optional[str]) -> None:
-    """Fork then clone the target github repo for hit CLI.\f
+    """Fork + clone + initialize the target github repo for hit CLI.\f
 
     Arguments:
         repository: The repository name needs to be forked and cloned
