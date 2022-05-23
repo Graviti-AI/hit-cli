@@ -6,6 +6,7 @@
 """Implementation of hit push."""
 
 import sys
+from configparser import SectionProxy
 from subprocess import PIPE, CalledProcessError, run
 from typing import Optional, Tuple
 
@@ -43,16 +44,13 @@ def _implement_push(force: bool) -> None:
 
         pulls_count = pulls.totalCount
         if pulls_count == 0:
-            task = _get_task_number(branch) if config.has_section("phabricator") else None
+            task = _extract_phab_task(branch) if config.has_section("phabricator") else None
 
             _git_push(branch, force)
             pull_request = _create_pull_request(repo, f"{origin_name.split('/', 1)[0]}:{branch}")
 
             if task:
-                conduit = Conduit(config["phabricator"]["url"], config["phabricator"]["token"])
-                conduit.append_to_description(task, pull_request.html_url)
-                click.secho("\n> Phabricator Task Linked:", fg="green")
-                click.secho(f"{config['phabricator']['url']}T{task}", underline=True)
+                _link_phab_task(config["phabricator"], task, pull_request.html_url)
 
             click.secho("\n> Pull Requset Created:", fg="green")
         elif pulls_count == 1:
@@ -74,7 +72,7 @@ def _implement_push(force: bool) -> None:
         sys.exit(1)
 
 
-def _get_task_number(branch: str) -> Optional[int]:
+def _extract_phab_task(branch: str) -> Optional[int]:
     if not branch.startswith("T"):
         return None
 
@@ -85,6 +83,17 @@ def _get_task_number(branch: str) -> Optional[int]:
         return int(task)
     except ValueError:
         return None
+
+
+def _link_phab_task(config: SectionProxy, task: int, html_url: str) -> None:
+    url = config["url"]
+    token = config["token"]
+
+    conduit = Conduit(url, token)
+    conduit.append_to_description(task, html_url)
+
+    click.secho("\n> Phabricator Task Linked:", fg="green")
+    click.secho(f"{url}T{task}", underline=True)
 
 
 def _git_push(branch: str, force: bool) -> None:
