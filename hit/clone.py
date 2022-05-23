@@ -8,13 +8,15 @@
 import os
 import sys
 from subprocess import CalledProcessError, run
-from typing import Optional
+from typing import Any, Dict, List, Optional
 
 import click
 from github import Github
 from github.GithubException import UnknownObjectException
 
 from hit.utility import fatal_and_kill, read_config
+
+_PRECOMMIT_CONFIG_PATH = ".pre-commit-config.yaml"
 
 
 def _implement_clone(repository: str, directory: Optional[str]) -> None:
@@ -39,6 +41,8 @@ def _implement_clone(repository: str, directory: Optional[str]) -> None:
     except CalledProcessError:
         sys.exit(1)
 
+    _install_precommit_scripts()
+
 
 def _get_repo_name(repository: str) -> str:
     if repository.startswith("https://github.com/"):
@@ -48,3 +52,39 @@ def _get_repo_name(repository: str) -> str:
         return repository[15:-4]
 
     return repository
+
+
+def _install_precommit_scripts() -> None:
+    if not os.path.exists(_PRECOMMIT_CONFIG_PATH):
+        return
+
+    click.echo("\n> Installing 'pre-commit' scripts:\n")
+
+    try:
+        # pylint: disable=import-outside-toplevel
+        from pre_commit.clientlib import load_config
+        from pre_commit.commands.install_uninstall import install
+        from pre_commit.store import Store
+    except ModuleNotFoundError:
+        click.echo(
+            f"'{_PRECOMMIT_CONFIG_PATH}' is found in the repo, but 'pre-commit' is not installed.\n"
+            "Skip the 'pre-commit' scripts installation phrase.\n"
+            "\n"
+            "To install 'pre-commit', run:\n"
+            "  pip install pre-commit\n"
+            "\n"
+            "To install the 'pre-commit' scripts for the repo, run:\n"
+            "  pre-commit install [-t {hook types}]\n"
+            "\n"
+            "Check 'https://pre-commit.com/index.html' for more info."
+        )
+        return
+
+    config: Dict[str, Any] = load_config(_PRECOMMIT_CONFIG_PATH)
+
+    stages: List[str] = config.get("default_stages", [])
+    for repo in config["repos"]:
+        for hook in repo["hooks"]:
+            stages.extend(hook.get("stages", []))
+
+    install(_PRECOMMIT_CONFIG_PATH, Store(), stages)
