@@ -30,7 +30,7 @@ def _implement_clone(repository: str, directory: Optional[str]) -> None:
 
     click.echo(f"> Forked repository: {click.style(forked_repo.full_name, bold=True)}\n")
 
-    directory = directory if directory else repository.split("/", 1)[1]
+    directory = directory if directory else name.split("/", 1)[1]
     try:
         run(["git", "clone", forked_repo.ssh_url, directory], check=True)
         os.chdir(directory)
