@@ -8,7 +8,7 @@
 import sys
 from subprocess import CalledProcessError, run
 
-from hit.utility import get_current_branch, sync_everything
+from hit.utility import get_current_branch, update_main
 
 
 def _implement_pull() -> None:
@@ -21,7 +21,7 @@ def _implement_pull() -> None:
         if branch != "main":
             run(["git", "checkout", "main"], check=True)
 
-        sync_everything()
+        update_main()
 
     except CalledProcessError:
         sys.exit(1)

@@ -158,9 +158,13 @@ def clean_commit_message(lines: Iterable[str]) -> List[str]:
     return results
 
 
-def sync_everything() -> None:
+def update_main() -> None:
     """Pull latest code from upstream, and push it to origin."""
+    click.secho("> Updating:", bold=True)
+    click.echo(">> Pulling 'main' from upstream:")
     run(["git", "pull", "upstream", "main", "--ff-only", "--no-rebase"], check=True)
+
+    click.echo("\n>> Pushing 'main' to origin:")
     run(["git", "push"], check=True)
 
 

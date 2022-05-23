@@ -21,7 +21,7 @@ from hit.utility import (
     get_current_branch,
     get_repo_names,
     read_config,
-    sync_everything,
+    update_main,
     warning,
 )
 
@@ -84,8 +84,9 @@ def _implement_land(yes: bool) -> None:
 
         click.secho("\n> Cleaning:", bold=True)
         clean_branch(branch, True, True)
-        click.secho("\n> Updating:", bold=True)
-        sync_everything()
+
+        click.echo("")
+        update_main()
 
     except CalledProcessError:
         sys.exit(1)
