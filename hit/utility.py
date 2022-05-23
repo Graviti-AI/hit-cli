@@ -102,6 +102,8 @@ def clean_branch(branch: str, yes: bool, main: bool) -> None:
         main: Whteher to checkout to "main" before cleaning.
 
     """
+    click.secho("> Cleaning:", bold=True)
+
     run(["git", "fetch", "--prune"], check=True)
 
     remote_branch = get_remote_branch(branch)
@@ -121,8 +123,12 @@ def clean_branch(branch: str, yes: bool, main: bool) -> None:
 
     if main:
         run(["git", "checkout", "main"], check=True)
+
+    click.echo("\n>> Deleting local branch:")
     run(["git", "branch", "-D", branch], check=True)
+
     if remote_branch:
+        click.echo("\n>> Deleting remote branch:")
         run(["git", "push", "--prune", "--delete"] + remote_branch.split("/", 1), check=True)
 
 

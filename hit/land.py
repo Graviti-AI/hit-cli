@@ -82,7 +82,7 @@ def _implement_land(yes: bool) -> None:
         click.secho("> Pull Requset Merged:", fg="green")
         click.secho(url, underline=True)
 
-        click.secho("\n> Cleaning:", bold=True)
+        click.echo("")
         clean_branch(branch, True, True)
 
         click.echo("")
