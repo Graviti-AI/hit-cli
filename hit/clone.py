@@ -58,13 +58,21 @@ def _implement_clone(repository: str, directory: Optional[str]) -> None:
 
 
 def _get_repo_name(repository: str) -> str:
+    name = repository
+
     if repository.startswith("https://github.com/"):
-        return "/".join(repository[19:].split("/", 2)[:2])
+        name = name[19:]
+    elif repository.startswith("git@github.com:"):
+        name = name[15:]
+    else:
+        return name
 
-    if repository.startswith("git@github.com") and repository.endswith(".git"):
-        return repository[15:-4]
+    name = "/".join(name.split("/", 2)[:2])
 
-    return repository
+    if name.endswith(".git"):
+        name = name[:-4]
+
+    return name
 
 
 def _install_precommit_scripts() -> None:
