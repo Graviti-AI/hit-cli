@@ -134,7 +134,7 @@ def _create_pull_request(repo: Repository.Repository, head: str) -> PullRequest.
 def _update_pull_request(pull_request: PullRequest.PullRequest) -> None:
     title, body = _get_cleanup_commit_message()
 
-    if pull_request.title == title and pull_request.body == body:
+    if pull_request.title == title and pull_request.body == (body if body else None):
         return
 
     pull_request.edit(title=title, body=body)
