@@ -8,7 +8,7 @@
 import sys
 from subprocess import CalledProcessError, run
 
-from hit.utility import get_current_branch, update_main
+from hit.utility import ENV, get_current_branch, update_main
 
 
 def _implement_pull() -> None:
@@ -19,7 +19,7 @@ def _implement_pull() -> None:
 
     try:
         if branch != "main":
-            run(["git", "checkout", "main"], check=True)
+            run(["git", "checkout", "main"], env=ENV, check=True)
 
         update_main()
 
@@ -28,4 +28,4 @@ def _implement_pull() -> None:
 
     finally:
         if branch != "main":
-            run(["git", "checkout", branch], check=True)
+            run(["git", "checkout", branch], env=ENV, check=True)

@@ -5,7 +5,6 @@
 
 """Implementation of hit land."""
 
-import os
 import sys
 from subprocess import PIPE, CalledProcessError, run
 from time import sleep
@@ -14,6 +13,7 @@ import click
 from github import Commit, Github, GithubException
 
 from hit.utility import (
+    ENV,
     PR_CLOSED,
     clean_branch,
     fatal,
@@ -93,7 +93,7 @@ def _implement_land(yes: bool) -> None:
 
 
 def _get_head_sha() -> str:
-    result = run(["git", "log", "--format=%H", "-n1"], stdout=PIPE, check=True)
+    result = run(["git", "log", "--format=%H", "-n1"], env=ENV, stdout=PIPE, check=True)
     return result.stdout.decode().strip()
 
 
@@ -127,13 +127,13 @@ def _check_pull_request_checks(commit: Commit.Commit, yes: bool) -> None:
 
 
 def _append_pull_request_url(base: str, url: str) -> None:
-    result = run(["git", "log", "--format=%H", f"{base}.."], stdout=PIPE, check=True)
+    result = run(["git", "log", "--format=%H", f"{base}.."], env=ENV, stdout=PIPE, check=True)
     commits = result.stdout.decode().strip().split("\n")
 
     trailer = f"{PR_CLOSED}{url}"
 
     for commit in commits:
-        result = run(["git", "log", "--format=%b", "-n1", commit], stdout=PIPE, check=True)
+        result = run(["git", "log", "--format=%b", "-n1", commit], env=ENV, stdout=PIPE, check=True)
         lines = result.stdout.decode().strip().split("\n")
 
         match = False
@@ -158,14 +158,14 @@ def _append_pull_request_url(base: str, url: str) -> None:
     else:
         return
 
-    env = os.environ.copy()
-    env["GIT_EDITOR"] = f"hit message append '{trailer}'"
-    env["GIT_SEQUENCE_EDITOR"] = "hit message reword"
+    local_env = ENV.copy()
+    local_env["GIT_EDITOR"] = f"hit message append '{trailer}'"
+    local_env["GIT_SEQUENCE_EDITOR"] = "hit message reword"
 
     click.secho("> Rewording:", bold=True)
     click.echo("Appending pull request URL to commit message.")
-    run(["git", "rebase", "--interactive", "--quiet", base], env=env, stdout=PIPE, check=True)
+    run(["git", "rebase", "--interactive", "--quiet", base], env=local_env, stdout=PIPE, check=True)
 
     click.secho("\n> Pushing:", bold=True)
-    run(["git", "push", "--force"], check=True)
+    run(["git", "push", "--force"], env=ENV, check=True)
     click.echo()

@@ -9,11 +9,28 @@ import os
 import sys
 from configparser import ConfigParser
 from subprocess import PIPE, run
-from typing import Iterable, List, NoReturn, Optional, Tuple
+from typing import Any, Dict, Iterable, List, NoReturn, Optional, Tuple
 
 import click
 
 PR_CLOSED = "PR Closed: "
+
+ENV: Dict[str, Any] = {
+    k: v
+    for k, v in os.environ.items()
+    if not k.startswith("GIT_")
+    or k.startswith(("GIT_CONFIG_KEY_", "GIT_CONFIG_VALUE_"))
+    or k
+    in {
+        "GIT_EXEC_PATH",
+        "GIT_SSH",
+        "GIT_SSH_COMMAND",
+        "GIT_SSL_CAINFO",
+        "GIT_SSL_NO_VERIFY",
+        "GIT_CONFIG_COUNT",
+        "GIT_HTTP_PROXY_AUTHMETHOD",
+    }
+}
 
 
 def config_filepath() -> str:
@@ -52,7 +69,7 @@ def get_current_branch() -> str:
         The name of current branch
 
     """
-    result = run(["git", "branch", "--show-current"], check=True, stdout=PIPE)
+    result = run(["git", "branch", "--show-current"], env=ENV, check=True, stdout=PIPE)
     return result.stdout.decode().strip()
 
 
@@ -67,7 +84,7 @@ def get_remote_branch(branch: str = "") -> Optional[str]:
 
     """
     upstream_command = ["git", "rev-parse", "--abbrev-ref", f"{branch}@{{u}}"]
-    result = run(upstream_command, check=False, stdout=PIPE, stderr=PIPE)
+    result = run(upstream_command, env=ENV, check=False, stdout=PIPE, stderr=PIPE)
     if result.returncode != 0:
         return None
 
@@ -75,7 +92,7 @@ def get_remote_branch(branch: str = "") -> Optional[str]:
 
 
 def _get_repo_name(remote_name: str) -> str:
-    result = run(["git", "remote", "get-url", remote_name], stdout=PIPE, check=True)
+    result = run(["git", "remote", "get-url", remote_name], env=ENV, stdout=PIPE, check=True)
     ssh_url = result.stdout.decode().strip()
     if not ssh_url.startswith("git@github.com:") or not ssh_url.endswith(".git"):
         fatal_and_kill("Upstream url '{ssh_url}' is not a github SSH key!")
@@ -104,7 +121,7 @@ def clean_branch(branch: str, yes: bool, main: bool) -> None:
     """
     click.secho("> Cleaning:", bold=True)
 
-    run(["git", "fetch", "--prune"], check=True)
+    run(["git", "fetch", "--prune"], env=ENV, check=True)
 
     remote_branch = get_remote_branch(branch)
 
@@ -122,14 +139,18 @@ def clean_branch(branch: str, yes: bool, main: bool) -> None:
         click.confirm("Do you want to continue?", abort=True)
 
     if main:
-        run(["git", "checkout", "main"], check=True)
+        run(["git", "checkout", "main"], env=ENV, check=True)
 
     click.echo("\n>> Deleting local branch:")
-    run(["git", "branch", "-D", branch], check=True)
+    run(["git", "branch", "-D", branch], env=ENV, check=True)
 
     if remote_branch:
         click.echo("\n>> Deleting remote branch:")
-        run(["git", "push", "--prune", "--delete"] + remote_branch.split("/", 1), check=True)
+        run(
+            ["git", "push", "--prune", "--delete"] + remote_branch.split("/", 1),
+            env=ENV,
+            check=True,
+        )
 
 
 def clean_commit_message(lines: Iterable[str]) -> List[str]:
@@ -168,10 +189,10 @@ def update_main() -> None:
     """Pull latest code from upstream, and push it to origin."""
     click.secho("> Updating:", bold=True)
     click.echo(">> Pulling 'main' from upstream:")
-    run(["git", "pull", "upstream", "main", "--ff-only", "--no-rebase"], check=True)
+    run(["git", "pull", "upstream", "main", "--ff-only", "--no-rebase"], env=ENV, check=True)
 
     click.echo("\n>> Pushing 'main' to origin:")
-    run(["git", "push"], check=True)
+    run(["git", "push"], env=ENV, check=True)
 
 
 def fatal(message: str) -> None:

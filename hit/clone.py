@@ -14,7 +14,7 @@ import click
 from github import Github
 from github.GithubException import UnknownObjectException
 
-from hit.utility import fatal_and_kill, read_config
+from hit.utility import ENV, fatal_and_kill, read_config
 
 _PRECOMMIT_CONFIG_PATH = ".pre-commit-config.yaml"
 
@@ -37,13 +37,15 @@ def _implement_clone(repository: str, directory: Optional[str]) -> None:
     directory = directory if directory else name.split("/", 1)[1]
     try:
         click.secho("> Cloning:", bold=True)
-        run(["git", "clone", forked_repo.ssh_url, directory], check=True)
+        run(["git", "clone", forked_repo.ssh_url, directory], env=ENV, check=True)
 
         os.chdir(directory)
 
         click.secho("\n> Setting upstream:", bold=True)
-        run(["git", "remote", "add", "upstream", origin_repo.ssh_url], check=True)
-        run(["git", "config", "--local", "remote.upstream.gh-resolved", "base"], check=True)
+        run(["git", "remote", "add", "upstream", origin_repo.ssh_url], env=ENV, check=True)
+        run(
+            ["git", "config", "--local", "remote.upstream.gh-resolved", "base"], env=ENV, check=True
+        )
 
         click.echo(f"Remote added: {click.style(origin_repo.ssh_url, underline=True)}\n")
 

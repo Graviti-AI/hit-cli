@@ -15,6 +15,7 @@ from github import Github, GithubException, PullRequest, Repository
 
 from hit.conduit import Conduit
 from hit.utility import (
+    ENV,
     clean_commit_message,
     fatal,
     fatal_and_kill,
@@ -106,11 +107,11 @@ def _git_push(branch: str, force: bool) -> None:
     elif force:
         push_command.append("-f")
 
-    run(push_command, check=True)
+    run(push_command, env=ENV, check=True)
 
 
 def _get_cleanup_commit_message() -> Tuple[str, str]:
-    result = run(["git", "log", "--format=%B", "-n1"], stdout=PIPE, check=True)
+    result = run(["git", "log", "--format=%B", "-n1"], env=ENV, stdout=PIPE, check=True)
     lines = result.stdout.decode().strip().split("\n")
     lines = clean_commit_message(lines)
     return lines[0], "\n".join(lines[1:]).strip()
