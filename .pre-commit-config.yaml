@@ -63,7 +63,7 @@ repos:
       - id: mypy
         types: [python]
         exclude: "(test_\\w*\\.py$)"
-        additional_dependencies: [types-requests==2.25.11, click==8.0.1, PyGithub==1.55]
+        additional_dependencies: [types-requests==2.25.11, click==8.0.1, PyGithub==1.57]
         args:
           [
             "--cache-dir=/tmp/mypy_cache/",
