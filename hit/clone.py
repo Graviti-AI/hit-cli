@@ -30,14 +30,18 @@ def _implement_clone(repository: str, directory: Optional[str]) -> None:
 
     click.secho("> Forking:", bold=True)
 
-    forked_repo = origin_repo.create_fork()
+    if origin_repo.visibility == "private":
+        click.secho(f"Repository '{name}' is private, skip the fork process.\n")
+        target_repo = origin_repo
+    else:
+        target_repo = origin_repo.create_fork()
 
-    click.echo(f"Repository forked: {click.style(forked_repo.full_name, bold=True)}\n")
+        click.echo(f"Repository forked: {click.style(target_repo.full_name, bold=True)}\n")
 
     directory = directory if directory else name.split("/", 1)[1]
     try:
         click.secho("> Cloning:", bold=True)
-        run(["git", "clone", forked_repo.ssh_url, directory], env=ENV, check=True)
+        run(["git", "clone", target_repo.ssh_url, directory], env=ENV, check=True)
 
         os.chdir(directory)
 
