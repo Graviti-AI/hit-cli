@@ -59,8 +59,9 @@ def _implement_clone(repository: str, directory: Optional[str]) -> None:
     if os.path.exists(_PRECOMMIT_CONFIG_PATH):
         click.secho("> Installing 'pre-commit' scripts:", bold=True)
         _install_precommit_scripts()
+        click.echo()
 
-    click.secho("\n> Success!", fg="green")
+    click.secho("> Success!", fg="green")
 
 
 def _get_repo_name(repository: str) -> str:
