@@ -95,7 +95,7 @@ def _get_repo_name(remote_name: str) -> str:
     result = run(["git", "remote", "get-url", remote_name], env=ENV, stdout=PIPE, check=True)
     ssh_url = result.stdout.decode().strip()
     if not ssh_url.startswith("git@github.com:") or not ssh_url.endswith(".git"):
-        fatal_and_kill("Upstream url '{ssh_url}' is not a github SSH key!")
+        fatal_and_kill("Remote url '{ssh_url}' is not a github SSH key!")
 
     return ssh_url[15:-4]
 
