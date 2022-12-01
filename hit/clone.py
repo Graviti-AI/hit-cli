@@ -109,7 +109,7 @@ def _install_precommit_scripts() -> None:
 
     config: Dict[str, Any] = load_config(_PRECOMMIT_CONFIG_PATH)
 
-    stages: List[str] = config.get("default_stages", [])
+    stages: List[str] = config["default_install_hook_types"].copy()
     for repo in config["repos"]:
         for hook in repo["hooks"]:
             stages.extend(hook.get("stages", []))
