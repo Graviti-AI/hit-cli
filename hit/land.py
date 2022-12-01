@@ -63,7 +63,7 @@ def _implement_land(yes: bool) -> None:
             _append_pull_request_url(f"{remote_commits[0].sha}^", url)
 
             try:
-                sleep(1)
+                sleep(2)
                 pull_request.merge(merge_method="rebase", sha=_get_head_sha())
             except GithubException as error:
                 if error.status in (405, 409):
