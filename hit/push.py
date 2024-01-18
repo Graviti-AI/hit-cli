@@ -17,6 +17,7 @@ from hit.utility import (
     clean_commit_message,
     fatal,
     fatal_and_kill,
+    get_base_branch,
     get_current_branch,
     get_remote_branch,
     get_repo_names,
@@ -25,11 +26,12 @@ from hit.utility import (
 )
 
 
-def _implement_push(force: bool) -> None:
+def _implement_push(base: str, force: bool) -> None:
     try:
         branch = get_current_branch()
-        if branch == "main":
-            fatal_and_kill(f"Do not execute 'hit push' on {branch} branch!")
+        base = base if base else get_base_branch()
+        if branch == base:
+            fatal_and_kill(f"Do not execute 'hit push' on base branch ({base})!")
 
         config = read_config()
         github = Github(config["github"]["token"])
@@ -44,7 +46,9 @@ def _implement_push(force: bool) -> None:
         pulls_count = pulls.totalCount
         if pulls_count == 0:
             _git_push(branch, force)
-            pull_request = _create_pull_request(repo, f"{origin_name.split('/', 1)[0]}:{branch}")
+            pull_request = _create_pull_request(
+                repo, base, f"{origin_name.split('/', 1)[0]}:{branch}"
+            )
 
             click.secho("\n> Pull Requset Created:", fg="green")
         elif pulls_count == 1:
@@ -86,11 +90,13 @@ def _get_cleanup_commit_message() -> Tuple[str, str]:
     return lines[0], "\n".join(lines[1:]).strip()
 
 
-def _create_pull_request(repo: Repository.Repository, head: str) -> PullRequest.PullRequest:
+def _create_pull_request(
+    repo: Repository.Repository, base: str, head: str
+) -> PullRequest.PullRequest:
     title, body = _get_cleanup_commit_message()
 
     try:
-        return repo.create_pull(title=title, body=body, base=repo.default_branch, head=head)
+        return repo.create_pull(title=title, body=body, base=base, head=head)
     except GithubException as error:
         if error.status == 422:
             for data in error.data["errors"]:

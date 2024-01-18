@@ -91,6 +91,40 @@ def get_remote_branch(branch: str = "") -> Optional[str]:
     return result.stdout.decode().strip()
 
 
+_BASE_BRANCH_KEY = "hit.baseBranch"
+
+
+def set_base_branch(branch: str) -> None:
+    """Set the base branch for current repo.
+
+    Arguments:
+        branch: The name of the base branch.
+
+    """
+    run(["git", "config", "--local", _BASE_BRANCH_KEY, branch], env=ENV, check=True)
+
+
+def get_base_branch() -> str:
+    """Get the base branch for current repo.
+
+    Returns:
+        The name of the base branch.
+
+    """
+    result = run(
+        ["git", "config", "--local", _BASE_BRANCH_KEY],
+        env=ENV,
+        check=True,
+        stdout=PIPE,
+        stderr=PIPE,
+    )
+    base = result.stdout.decode().strip()
+    if not base:
+        fatal_and_kill("Get base branch failed.")
+
+    return base
+
+
 def _get_repo_name(remote_name: str) -> str:
     result = run(["git", "remote", "get-url", remote_name], env=ENV, stdout=PIPE, check=True)
     ssh_url = result.stdout.decode().strip()
@@ -110,13 +144,13 @@ def get_repo_names() -> Tuple[str, str]:
     return _get_repo_name("origin"), _get_repo_name("upstream")
 
 
-def clean_branch(branch: str, yes: bool, main: bool) -> None:
+def clean_branch(branch: str, base: Optional[str], yes: bool) -> None:
     """Delete current branch and its upstream branch.
 
     Arguments:
         branch: Targat branch name.
+        base: The base branch name.
         yes: Run non-interactively with 'yes' to all prompts.
-        main: Whteher to checkout to "main" before cleaning.
 
     """
     click.secho("> Cleaning:", bold=True)
@@ -138,8 +172,8 @@ def clean_branch(branch: str, yes: bool, main: bool) -> None:
         click.secho(message, fg="yellow")
         click.confirm("Do you want to continue?", abort=True)
 
-    if main:
-        run(["git", "checkout", "main"], env=ENV, check=True)
+    if base:
+        run(["git", "checkout", base], env=ENV, check=True)
 
     click.echo("\n>> Deleting local branch:")
     run(["git", "branch", "-D", branch], env=ENV, check=True)
@@ -185,13 +219,18 @@ def clean_commit_message(lines: Iterable[str]) -> List[str]:
     return results
 
 
-def update_main() -> None:
-    """Pull latest code from upstream, and push it to origin."""
-    click.secho("> Updating:", bold=True)
-    click.echo(">> Pulling 'main' from upstream:")
-    run(["git", "pull", "upstream", "main", "--ff-only", "--no-rebase"], env=ENV, check=True)
+def update_branch(branch: str) -> None:
+    """Pull latest code from upstream, and push it to origin.
 
-    click.echo("\n>> Pushing 'main' to origin:")
+    Arguments:
+        branch: The branch name of the branch needs to be updated.
+
+    """
+    click.secho("> Updating:", bold=True)
+    click.echo(f">> Pulling '{branch}' from upstream:")
+    run(["git", "pull", "upstream", branch, "--ff-only", "--no-rebase"], env=ENV, check=True)
+
+    click.echo(f"\n>> Pushing '{branch}' to origin:")
     run(["git", "push"], env=ENV, check=True)
 
 

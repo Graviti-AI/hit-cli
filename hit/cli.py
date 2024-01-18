@@ -52,17 +52,21 @@ def pull() -> None:
 
 
 @hit.command()
+@click.option(
+    "-b", "--base", default="", help="The branch into which the code wanted to be merged."
+)
 @click.option("-f", "--force", is_flag=True, help="Whether to git push with -f.")
-def push(force: bool) -> None:
+def push(base: str, force: bool) -> None:
     """Push the local branch to remote and create/update the pull request.\f
 
     Arguments:
+        base: The branch into which the code wanted to be merged.
         force: Whether to git push with -f.
 
     """  # noqa: D415, D301
     from hit.push import _implement_push
 
-    _implement_push(force)
+    _implement_push(base, force)
 
 
 @hit.command()

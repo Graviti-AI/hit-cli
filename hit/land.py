@@ -18,10 +18,11 @@ from hit.utility import (
     clean_branch,
     fatal,
     fatal_and_kill,
+    get_base_branch,
     get_current_branch,
     get_repo_names,
     read_config,
-    update_main,
+    update_branch,
     warning,
 )
 
@@ -29,11 +30,11 @@ from hit.utility import (
 def _implement_land(yes: bool) -> None:
     try:
         branch = get_current_branch()
-        if branch == "main":
-            fatal_and_kill(f"Do not execute 'hit land' on {branch} branch!")
+        base = get_base_branch()
+        if branch == base:
+            fatal_and_kill(f"Do not execute 'hit land' on base branch ({base})!")
 
-        token = read_config()["github"]["token"]
-        github = Github(token)
+        github = Github(read_config()["github"]["token"])
 
         origin_name, upstream_name = get_repo_names()
 
@@ -83,10 +84,10 @@ def _implement_land(yes: bool) -> None:
         click.secho(url, underline=True)
 
         click.echo("")
-        clean_branch(branch, True, True)
+        clean_branch(branch, base, True)
 
         click.echo("")
-        update_main()
+        update_branch(base)
 
     except CalledProcessError:
         sys.exit(1)

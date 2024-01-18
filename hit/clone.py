@@ -14,7 +14,7 @@ import click
 from github import Github
 from github.GithubException import UnknownObjectException
 
-from hit.utility import ENV, fatal_and_kill, read_config
+from hit.utility import ENV, fatal_and_kill, read_config, set_base_branch
 
 _PRECOMMIT_CONFIG_PATH = ".pre-commit-config.yaml"
 
@@ -50,8 +50,11 @@ def _implement_clone(repository: str, directory: Optional[str]) -> None:
         run(
             ["git", "config", "--local", "remote.upstream.gh-resolved", "base"], env=ENV, check=True
         )
+        click.echo(f"Remote added: {click.style(origin_repo.ssh_url, underline=True)}")
 
-        click.echo(f"Remote added: {click.style(origin_repo.ssh_url, underline=True)}\n")
+        click.secho("\n> Setting base branch:", bold=True)
+        set_base_branch(origin_repo.default_branch)
+        click.echo(f"Base branch set: {click.style(origin_repo.default_branch, underline=True)}\n")
 
     except CalledProcessError:
         sys.exit(1)
