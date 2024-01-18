@@ -21,7 +21,9 @@ def _implement_auth() -> None:
 
     github_token = _auth_for_github()
 
-    config_parser.add_section("github")
+    if not config_parser.has_section("github"):
+        config_parser.add_section("github")
+
     config_parser["github"]["token"] = github_token
 
     with open(config_file, "w", encoding="utf-8") as fp:
