@@ -20,17 +20,11 @@ def hit() -> None:
 
 
 @hit.command()
-@click.option("-p", "--phabricator", is_flag=True, help="Auth for Phabricator.")
-def auth(phabricator: bool) -> None:
-    """Get Github Auth for hit CLI.\f
-
-    Arguments:
-        phabricator: Whether auth with Phabricator.
-
-    """  # noqa: D415, D301
+def auth() -> None:
+    """Get Github Auth for hit CLI.\f"""  # noqa: D415, D301
     from hit.auth import _implement_auth
 
-    _implement_auth(phabricator)
+    _implement_auth()
 
 
 @hit.command()

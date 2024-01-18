@@ -6,14 +6,12 @@
 """Implementation of hit push."""
 
 import sys
-from configparser import SectionProxy
 from subprocess import PIPE, CalledProcessError, run
-from typing import Optional, Tuple
+from typing import Tuple
 
 import click
 from github import Github, GithubException, PullRequest, Repository
 
-from hit.conduit import Conduit
 from hit.utility import (
     ENV,
     clean_commit_message,
@@ -45,13 +43,8 @@ def _implement_push(force: bool) -> None:
 
         pulls_count = pulls.totalCount
         if pulls_count == 0:
-            task = _extract_phab_task(branch) if config.has_section("phabricator") else None
-
             _git_push(branch, force)
             pull_request = _create_pull_request(repo, f"{origin_name.split('/', 1)[0]}:{branch}")
-
-            if task:
-                _link_phab_task(config["phabricator"], task, pull_request.html_url)
 
             click.secho("\n> Pull Requset Created:", fg="green")
         elif pulls_count == 1:
@@ -71,30 +64,6 @@ def _implement_push(force: bool) -> None:
 
     except CalledProcessError:
         sys.exit(1)
-
-
-def _extract_phab_task(branch: str) -> Optional[int]:
-    if not branch.startswith("T"):
-        return None
-
-    index = branch.find("_")
-    task = branch[1:index] if index != -1 else branch[1:]
-
-    try:
-        return int(task)
-    except ValueError:
-        return None
-
-
-def _link_phab_task(config: SectionProxy, task: int, html_url: str) -> None:
-    url = config["url"]
-    token = config["token"]
-
-    conduit = Conduit(url, token)
-    conduit.append_to_description(task, html_url)
-
-    click.secho("\n> Phabricator Task Linked:", fg="green")
-    click.secho(f"{url}T{task}", underline=True)
 
 
 def _git_push(branch: str, force: bool) -> None:
